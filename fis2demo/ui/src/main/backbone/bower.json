@@ -1,0 +1,14 @@
+{
+	"name": "UI-Angular-bower",
+	"version": "0.0.1",
+	"main": "",
+	"ignore": [
+		"**/.*",
+		"node_modules.*",
+		"bower_components",
+	],
+	"dependencies": {
+		"jquery"		: "1.5.6",
+		"underscore"	: "*"
+	}
+}

@@ -1,0 +1,15 @@
+
+{
+	"request": {
+	    "method": "GET",
+	    "url": "/api/cards"
+	  },
+	  "response": {
+	    "status": 200,
+	    "bodyFileName": "cards.json",
+	    "headers": {
+	      "Content-Type": "application/json"
+	    }
+	}
+}
+	

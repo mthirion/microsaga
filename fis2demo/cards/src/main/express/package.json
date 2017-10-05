@@ -1,0 +1,21 @@
+{
+  "name": "Card-Express",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "",
+  
+  "main": "server.js",
+  
+  "scripts":
+  {
+  	"start": "node server.js"
+  },
+  
+  "dependencies":
+  {
+    "express": "~4.0.0",
+    "express-session": "~1.14.0",
+    "body-parser": "*"
+  }
+}

@@ -1,0 +1,43 @@
+{
+    "cards" : [
+    	 {
+          "000M1" : [
+              {
+                 "owner" : {
+                     "id" : "0001",
+                 }
+               },
+               {
+                  "account" : {
+                     "id" : "000A",
+                 }
+               },
+               {
+                  "attributes" : {
+                     "type" : "bancontact",
+                     "network": "Maestro"
+                 }
+               }
+          ]
+    	},
+    	{
+          "000C1" : [
+              {
+                 "owner" : {
+                     "id" : "0002",
+                 }
+               },
+               {
+                  "account" : {
+                     "id" : "000B",
+                 }
+               },
+               {
+                  "attributes" : {
+                     "type" : "credit",
+                     "network": "Mastercard"
+                 }
+               }
+          ]
+    	}
+}

@@ -1,0 +1,14 @@
+{
+  "name": "UI-Backbone",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "",
+  
+  "main": "app.js",
+  
+  "dependencies":
+  {
+    "bower": "*",
+  }
+}

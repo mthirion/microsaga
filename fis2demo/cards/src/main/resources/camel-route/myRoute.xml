@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes id="routes-b722f53c-ba58-45d3-976e-8e39a30eb7c6" xmlns="http://camel.apache.org/schema/spring">
+    <route id="getPersons">
+        <from id="_from1" uri="direct:getPersons"/>
+        <transform id="_transform1">
+            <simple>ref:myBean</simple>
+        </transform>
+        <to id="_to1" uri="log:out"/>
+    </route>
+    <route id="postPersons">
+        <from id="_from2" uri="direct:postPersons"/>
+        <transform id="_transform2">
+            <simple>ref:myBean</simple>
+        </transform>
+        <to id="_to2" uri="log:out"/>
+    </route>
+    <route id="getPersonId">
+        <from id="_from3" uri="direct:getPersonId"/>
+        <transform id="_transform3">
+            <simple>ref:myBean</simple>
+        </transform>
+        <to id="_to3" uri="log:out"/>
+    </route>
+</routes>

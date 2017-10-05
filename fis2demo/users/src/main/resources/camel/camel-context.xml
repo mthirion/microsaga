@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd             http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd     http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd     http://www.springframework.org/schema/context        http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+    <!-- ============== -->
+    <!-- SET PROPERTIES -->
+    <!-- ============== -->
+    <!-- <util:properties id="camelproperties" location="classpath:camel/camel.properties" 
+		/> ${camelproperties:propName} -->
+    <context:property-placeholder location="classpath:camel/camel.properties"/>
+    <!-- ======== -->
+    <!-- MONGO DB -->
+    <!-- ======== -->
+    <bean class="com.mongodb.MongoClient" id="mongoclient" name="mongoclient">
+        <constructor-arg index="0" type="java.lang.String" value="${camel.dbhost}"/>
+        <constructor-arg index="1" type="int" value="${camel.dbport}"/>
+    </bean>
+    <!-- ============ -->
+    <!-- CUSTOM BEANS -->
+    <!-- ============ -->
+    <bean class="org.jboss.integration.fis2demo.users.UserProcessor" id="processor"/>
+    <bean
+        class="org.jboss.integration.fis2demo.users.CompensationProcessor" id="compensator"/>
+    <!-- ========= -->
+    <!-- ACTIVE MQ -->
+    <!-- ========= -->
+    <!-- ConnectionFactory for configuring the activemq component -->
+    <bean class="org.apache.activemq.ActiveMQConnectionFactory" id="jmsConnectionFactory">
+        <property name="brokerURL" value="${camel.amqbroker}"/>
+        <property name="userName" value="${camel.amquser}"/>
+        <property name="password" value="${camel.amqpassword}"/>
+    </bean>
+    <!-- <bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory" -->
+    <!-- init-method="start" destroy-method="stop"> -->
+    <!-- <property name="maxConnections" value="8" /> -->
+    <!-- <property name="connectionFactory" ref="jmsConnectionFactory" /> -->
+    <!-- </bean> -->
+    <!-- Configuration of the activemq component through a JMSConfig object -->
+    <bean class="org.apache.camel.component.jms.JmsConfiguration" id="jmsConfig">
+        <property name="connectionFactory" ref="jmsConnectionFactory"/>
+    </bean>
+    <bean class="org.apache.activemq.camel.component.ActiveMQComponent" id="activemq">
+        <property name="configuration" ref="jmsConfig"/>
+        <property name="transacted" value="true"/>
+        <property name="cacheLevelName" value="CACHE_CONSUMER"/>
+    </bean>
+    <!-- ================ -->
+    <!-- JMS TRANSACTIONS -->
+    <!-- ================ -->
+    <!-- Configuration of the embedded Spring TransactionManager to use in Camel 
+		route. The implementation is auto-discovered by the Spring-Boot Naranaya 
+		starter package. The Transaction manager is associated to a Policy that is 
+		activated by .transacted(required). So basically we need to configure the 
+		"required" bean -->
+    <!--     <bean -->
+    <!--         class="org.springframework.jms.connection.JmsTransactionManager" id="jmsTransactionManager"> -->
+    <!--         <property name="connectionFactory" ref="jmsConnectionFactory"/> -->
+    <!--     </bean> -->
+    <!--     <bean class="org.apache.camel.spring.spi.SpringTransactionPolicy" id="required"> -->
+    <!--         <property name="transactionManager" ref="jmsTransactionManager"/> -->
+    <!--         <property name="propagationBehaviorName" value="PROPAGATION_REQUIRES_NEW"/> -->
+    <!--     </bean> -->
+    <!-- <bean id="txManager" class="org.springframework.transaction.PlatformTransactionManager"/> -->
+    <!-- ============= -->
+    <!-- CAMEL CONTEXT -->
+    <!-- ============= -->
+    <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+        <propertyPlaceholder id="properties" location="classpath:camel/camel.properties"/>
+        <onException>
+            <exception>java.lang.IllegalArgumentException</exception>
+            <redeliveryPolicy maximumRedeliveries="0" redeliveryDelay="5000"/>
+            <handled>
+                <constant>false</constant>
+            </handled>
+            <log message="exception"/>
+            <to uri="activemq:{{camel.compensateq}}?replyTo={{camel.compensationreplyq}}"/>
+        </onException>
+        <route id="users_route">
+            <!--             <transacted id="_transacted1" ref="required"/> -->
+            <!-- TEST THE ERROR HANDLING -->
+            <!--        <camel:throwException exceptionType="java.lang.IllegalArgumentException" message="Custom exception to try"/> -->
+            <from id="input" uri="activemq:{{camel.inputq}}?replyTo={{camel.outputq}}&amp;clientId={{camel.JMSclientId}}&amp;durableSubscriptionName={{camel.subscriberName}}&amp;subscriptionDurable=true"/>
+            <log id="read_input" message="reading message from {{camel.inputq}}"/>
+            <log id="before" message="BODY BEFORE"/>
+            <log id="body1" message="${body}"/>
+            <log id="line1" message="=================="/>
+            <process id="process" ref="processor"/>
+            <log id="after" message="BODY AFTER"/>
+            <!--             <throwException -->
+            <!--                 exceptionType="java.lang.IllegalArgumentException" -->
+            <!--                 id="exception1" message="trying to raise an exception"/> -->
+            <!--             <convertBodyTo id="convstring1" type="java.lang.String"/> -->
+            <log id="body2" message="${body}"/>
+            <log id="line2" message="==================="/>
+            <convertBodyTo id="convMongo1" type="com.mongodb.DBObject"/>
+            <to id="tomongo" uri="mongodb:mongoclient?database={{camel.dbname}}&amp;collection={{camel.dbcollection}}&amp;operation=save"/>
+            <setBody id="getsaved1">
+                <simple>${header.saved_body}</simple>
+            </setBody>
+            <log id="line3" message="==================="/>
+            <log id="line4" message="==================="/>
+            <log id="writeout" message="propagating message to {{camel.outputq}}"/>
+            <!--             <log message="${body}"/> -->
+            <!--  using the replyTo feature -->
+            <!--             <to uri="activemq:{{camel.outputq}}?exchangePattern=InOnly"/> -->
+        </route>
+        <route id="compensation">
+            <from id="fromcompensate" uri="activemq:{{camel.compensateq}}?exchangePattern=InOnly&amp;replyTo={{camel.compensationreplyq}}&amp;clientId={{camel.JMSclientId2}}&amp;durableSubscriptionName={{camel.subscriberName2}}&amp;subscriptionDurable=true"/>
+            <log id="line10" message="=========="/>
+            <log id="body10" message="${body}"/>
+            <process id="compensate" ref="compensator"/>
+            <convertBodyTo id="convertDBCompensate" type="com.mongodb.DBObject"/>
+            <log id="line11" message="=========="/>
+            <log id="body12" message="${body}"/>
+            <to id="compensatedb" uri="mongodb:mongoclient?database={{camel.dbname}}&amp;collection={{camel.dbcollection}}&amp;operation=remove"/>
+            <setBody id="savedcompensate">
+                <simple>${header.saved_body}</simple>
+            </setBody>
+            <log id="end" message="propagating to {{camel.compensationreplyq}}"/>
+            <!-- automatic replyTo -->
+        </route>
+    </camelContext>
+</beans>

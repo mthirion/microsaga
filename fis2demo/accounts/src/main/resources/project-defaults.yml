@@ -1,0 +1,14 @@
+swarm:
+  http:
+    port: 8668
+  datasources:
+    data-sources:
+      AccountDS:
+        driver-name: mysql
+        connection-url: jdbc:mysql://localhost:3306/fis2demo
+        user-name: root
+        password: mysql
+        jta: true
+  transactions:
+  messaging-activemq:
+    http: 8668

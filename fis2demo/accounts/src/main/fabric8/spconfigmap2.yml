@@ -1,0 +1,14 @@
+kind: ConfigMap
+apiVersion: v1
+
+metadata:
+  name: ${project.artifactId}
+  
+data:
+#    route.message: Hello Springboot!
+
+  application.properties: |-
+    camel.springboot.main-run-controller: true
+    server.port: 8082
+    route.message: Hello Springboot!
+    env.stage: dev-test

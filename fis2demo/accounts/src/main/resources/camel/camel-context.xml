@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd             http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd     http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd     http://www.springframework.org/schema/context        http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+    <!-- ========== -->
+    <!-- PROPERTIES -->
+    <!-- ========== -->
+    <!-- <context:property-placeholder location="classpath:camel/camel.properties" /> -->
+    <!-- ========= -->
+    <!-- ACTIVE MQ -->
+    <!-- ========= -->
+    <bean class="org.apache.activemq.ActiveMQConnectionFactory" id="jmsConnectionFactory">
+        <property name="brokerURL" value="tcp://localhost:61616"/>
+        <property name="userName" value="admin"/>
+        <property name="password" value="admin"/>
+    </bean>
+    <!-- <bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory" -->
+    <!-- init-method="start" destroy-method="stop"> -->
+    <!-- <property name="maxConnections" value="8" /> -->
+    <!-- <property name="connectionFactory" ref="jmsConnectionFactory" /> -->
+    <!-- </bean> -->
+    <bean class="org.apache.camel.component.jms.JmsConfiguration" id="jmsConfig">
+        <property name="connectionFactory" ref="jmsConnectionFactory"/>
+    </bean>
+    <bean class="org.apache.activemq.camel.component.ActiveMQComponent" id="activemqswarm">
+        <property name="configuration" ref="jmsConfig"/>
+        <property name="transacted" value="true"/>
+        <!-- <property name="cacheLevelName" value="CACHE_CONSUMER"/> -->
+    </bean>
+    <!-- ============ -->
+    <!-- CUSTOM BEANS -->
+    <!-- ============ -->
+    <bean class="org.jboss.integration.fis2demo.account.DBHolder" id="dbholder"/>
+    <bean class="org.jboss.integration.fis2demo.account.Compensate" id="compensate"/>
+    <!-- ============ -->
+    <!-- PACKAGE SCAN -->
+    <!-- ============ -->
+    <camel:camelContext id="camelContext-97322b65-c57e-423d-a162-e33876c35a3e">
+        <camel:packageScan>
+            <camel:package>org.jboss.integration.fis2demo.account.route</camel:package>
+        </camel:packageScan>
+    </camel:camelContext>
+</beans>

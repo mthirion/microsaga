@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html ng-app="angular_ui">
+<!-- ng-app tells that it's an Angular page => must be compiled
+	 the name is the name of the main module => var myapp = angular.module("app", [])
+	 so at the end the HTML dom is linked to the module app in the app.js file
+ -->
+
+<head>
+<meta charset="UTF-8" />
+<title>Insert title here</title>
+
+
+<!-- <script src="./bootstrap.min.js"></script> -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+	integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
+	crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	rel="stylesheet">
+
+
+<!-- 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script> -->
+<script src="./angular.min.js"></script>
+<script src="./angular-route.min.js"></script>
+<script src="./angular-resource.min.js"></script>
+
+
+<script src="./init.js"></script>
+<script src="./router.js"></script>
+<script src="./services.js"></script>
+<script src="./controllers.js"></script>
+
+</head>
+
+
+
+<body ng-controller="mainController">
+	<section>
+		<h1>New Bank Account</h1>
+
+
+		<div class="container">
+			<h2>Owner information</h2>
+
+			<!-- ng-model for select, input and textArea
+				 ng-bind for text, like span, div 
+				 also ng-click -->
+
+			<!-- ng-show and ng-hide 
+				 ex: ng-show='boolean' -->
+
+			<!-- ng-if , ng-include , ng-switch , ng-repeat...
+				 ex: ng-reapeat='data in datas' => where datas is an array [...] 
+				 can then reuse 'data' later -->
+
+			<!-- the tags 'form', 'a' and 'input' are overloaded by angular and interpreted/compiled 
+				 for example, input can have a name and a type 
+				 the input type is used for validation (ex: type = email => check ...@... 
+				 the input name can be used in the scope to know if it was clicked... -->
+			<form>
+				<div class="input-group">
+					<span class="input-group-addon" id="firstname-label">First
+						Name</span> <input type="text" class="form-control" id="firstname-input"
+						aria-describedby="basic-addon3" ng-model="inputFirstName">
+				</div>
+
+				<div class="input-group">
+					<span class="input-group-addon" id="lastname-label">Last
+						Name</span> <input type="text" class="form-control" id="lastname-input"
+						aria-describedby="basic-addon3" ng-model="inputLastName">
+				</div>
+
+				<div class="input-group">
+					<span class="input-group-addon" id="age-label">Age</span> <input
+						type="text" class="form-control" id="age-input"
+						aria-describedby="basic-addon3" ng-model="inputAge">
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon" id="email-label">@Email</span> <input
+						type="email" class="form-control" id="email-input"
+						aria-describedby="basic-addon3" ng-model="inputEmail">
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon" id="tel-label">Tel:</span> <input
+						type="tel" class="form-control" id="tel-input"
+						aria-describedby="basic-addon3" ng-model="inputTel">
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon" id="registration-label">National
+						Registration Number</span> <input type="text" class="form-control"
+						id="registration-input" aria-describedby="basic-addon3"
+						ng-model="inputRegistration">
+				</div>
+
+				<br/>
+				<h2>Account information</h2>
+				<div class="input-group">
+					<span class="row ">Account Type
+						<label class="radio-inline input-group-addon"> 
+							<input name="AccountGroup"	id="currentAccountTag" value="Standard" type="radio" ng-model="inputAccount"> Standard Account
+						</label> 
+						<label class="radio-inline input-group-addon"> 
+							<input name="AccountGroup"	id="savingsAccountTag" value="Savings" type="radio" ng-model="inputAccount">Savings Account
+						</label>
+					</span>
+				</div>
+				
+				<br/>
+				<div class="input-group">
+					<span class="row ">Card Type
+						<label class="radio-inline input-group-addon"> 
+							<input name="CardGroup"	id="mastercardTag" value="Mastercard" type="radio" ng-model="inputCard">Mastercard
+						</label> 
+						<label class="radio-inline input-group-addon"> 
+							<input name="CardGroup"	id="visaTag" value="Visa" type="radio" ng-model="inputCard">Visa
+						</label>
+					</span>
+				</div>
+				<!-- 					<span class="input-group-addon" id="current_account">Current -->
+				<!-- 						Account</span> <input type="radio" class="form-control" -->
+				<!-- 						id="CurrentAccount" aria-describedby="basic-addon3" -->
+				<!-- 						ng-model="inputCurrentAccount"> <span -->
+				<!-- 						class="input-group-addon" id="savings_account">Savings -->
+				<!-- 						Account</span> <input type="radio" class="form-control" -->
+				<!-- 						id="SavingsAccount" aria-describedby="basic-addon3" -->
+				<!-- 						ng-model="inputSavingsAccount"> -->
+				<!-- 				</div> -->
+				
+				<br>
+				<button ng-click="clickButton()" class="btn btn-primary center-block">save</button>
+			</form>
+		</div>
+
+		<!-- 
+		<form>
+			<div class="form-group">
+				<label for="RegistratDetails">Registration Number</label> 
+				<input
+					type="text" class="form-control" id="registration-form-label"
+					placeholder="Enter registration number">
+			</div>
+			<button ng-click="clickButton()" class="btn btn-primary">save</button>
+		</form>
+		 -->
+
+		<!-- 			<div class="container"> -->
+		<!-- 				<h2>Account information</h2> -->
+		<!-- 			</div> -->
+		<!-- 			<div class="dropdown"> -->
+		<!-- 				<button class="btn btn-secondary dropdown-toggle" type="button" -->
+		<!-- 					id="accountType" data-toggle="dropdown" aria-haspopup="true" -->
+		<!-- 					aria-expanded="false">Account type</button> -->
+		<!-- 				<div class="dropdown-menu" aria-labelledby="accountType"> -->
+		<!-- 					<a class="dropdown-item" href="#">Current account</a>  -->
+		<!-- 					<a class="dropdown-item" href="#">Savings accont</a> -->
+		<!-- 				</div> -->
+		<!-- 			</div> -->
+
+		<div>
+			<h3>History</h3>
+			<table class="table">
+				<thead>
+					<tr>
+						<th align="center">Prenom</th>
+						<th align="center">Nom</th>
+						<th align="center">Age</th>
+						<th align="center">Email</th>
+						<th align="center">Tel</th>
+						<th align="center">National Number</th>
+						<th align="center">Account type</th>
+						<th align="center">Card type</th>
+						<!-- <th><a href="">modifer</a> <a href="">supprimer</a></th>-->
+					</tr>
+				</thead>
+
+				<tbody>
+					<tr ng-repeat='person in persons'>
+						<td>{{ person.FirstName }}</td>
+						<td>{{ person.LastName }}</td>
+						<td>{{ person.Age }}</td>
+						<td>{{ person.Email }}</td>
+						<td>{{ person.Tel }}</td>
+						<td>{{ person.NationalNumber }}</td>
+						<td>{{ person.Account }}</td>
+						<td>{{ person.Card }}</td>
+						<td><a href="" class="list-group-item list-group-item-action">supprimer</a>
+					</tr>
+
+				</tbody>
+			</table>
+			<button ng-click="sendButton()" class="btn btn-success">submit</button>
+		</div>
+	</section>
+</body>
+
+</html>

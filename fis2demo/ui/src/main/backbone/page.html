@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+table, th, td {
+	border: 1px solid black;
+}
+</style>
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+	integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
+	crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	rel="stylesheet">
+
+</head>
+
+<body>
+	<script src="./jquery.min.js"></script>
+	<script src="./underscore.min.js"></script>
+	<!-- Default template for backbone -->
+	<script src="./backbone.min.js"></script>
+	<script src="./backbone.localstorage.min.js"></script>
+
+	<script src="./models.js"></script>
+	<script src="./collections.js"></script>
+	<script src="./views.js"></script>
+
+	<script src="./routers.js"></script>
+	<script src="./events.js"></script>
+	<!-- 	<script src="./controller.js"></script> -->
+
+
+
+
+	<section id="main_section">
+
+		<h1>New Bank Account</h1>
+
+		<div class="container">
+
+			<h2>Ownler information</h2>
+			<form>
+				<!-- 				<div> -->
+				<!-- 					<label style="display:block;float:left;width:100px;">Prenom</label><input id="input_prenom" placeholder="Entrez votre nom" /> -->
+				<!-- 				</div> -->
+				<!-- 				<div> -->
+				<!-- 					<label style="display:block;float:left;width:100px;">Nom </label><input id="input_nom" placeholder="Entrez votre prenom" /> -->
+				<!-- 				</div> -->
+				<!-- 				<div> -->
+				<!-- 					<label style="display:block;float:left;width:100px;">Age</label> <input id="input_age"  placeholder="Entrez votre age" /> -->
+				<!-- 				</div> -->
+
+
+				<form>
+					<div class="input-group">
+						<span class="input-group-addon" id="firstname-label">First Name</span> 
+							<input type="text" class="form-control" id="firstname-input" aria-describedby="basic-addon3">
+					</div>
+
+					<div class="input-group">
+						<span class="input-group-addon" id="lastname-label">Last Name</span> 
+							<input type="text" class="form-control" id="lastname-input" aria-describedby="basic-addon3">
+					</div>
+
+					<div class="input-group">
+						<span class="input-group-addon" id="age-label">Age</span> 
+							<input type="text" class="form-control" id="age-input" aria-describedby="basic-addon3">
+					</div>
+					<div class="input-group">
+						<span class="input-group-addon" id="email-label">@Email</span> 
+							<input type="email" class="form-control" id="email-input" aria-describedby="basic-addon3">
+					</div>
+					<div class="input-group">
+						<span class="input-group-addon" id="tel-label">Tel:</span> 
+							<input type="tel" class="form-control" id="tel-input" aria-describedby="basic-addon3">
+					</div>
+					<div class="input-group">
+						<span class="input-group-addon" id="registration-label">National Registration Number</span> 
+							<input type="text" class="form-control" id="registration-input" aria-describedby="basic-addon3">
+					</div>
+
+
+					<br />
+					<h2>Account information</h2>
+					<div class="input-group">
+						<span class="row ">Account Type 
+							<label class="radio-inline input-group-addon"> 
+								<input name="AccountGroup" id="currentAccountTag" value="Standard" checked type="radio"> Standard Account
+							</label> 
+							<label class="radio-inline input-group-addon"> 
+								<input name="AccountGroup" id="savingsAccountTag" value="Savings" type="radio">Savings Account
+							</label>
+						</span>
+					</div>
+
+					<br />
+					<div class="input-group">
+						<span class="row ">Card Type 
+							<label class="radio-inline input-group-addon"> 
+								<input name="CardGroup" id="mastercardTag" value="Mastercard" checked type="radio">Mastercard
+							</label> 
+							<label class="radio-inline input-group-addon"> 
+								<input name="CardGroup" id="visaTag" value="Visa" type="radio">Visa
+							</label>
+						</span>
+					</div>
+
+					<br>
+					<button ng-click="clickButton()"
+						class="btn btn-primary center-block backbone_save">save</button>
+<!-- 					<button class="button_add">press here</button> -->
+				</form>
+		</div>
+
+
+		<div id="div_list">
+			<h3>History</h3>
+			<table class="table">
+				<thead align="center">
+					<tr>
+						<th align="center">Prenom</th>
+						<th align="center">Nom</th>
+						<th align="center">Age</th>
+						<th align="center">Email</th>
+						<th align="center">Tel</th>
+						<th align="center">National Number</th>
+						<th align="center">Account type</th>
+						<th align="center">Card type</th>
+
+						<!-- <th><a href="">modifer</a> <a href="">supprimer</a></th>-->
+					</tr>
+				</thead>
+
+				<tbody align="center" id="history-view" class="bodyclass">
+				</tbody>
+			</table>
+			<button class="btn btn-success backbone_submit">submit</button>
+		</div>
+
+	</section>
+
+	<!-- 	This part could (should) be in a controller.js -->
+	<script type="text/template" id="historyItem">
+					<tr>
+						<td><%=Prenom%></td>
+						<td><%=Nom%></td>
+						<td><%=Age%></td>
+						<td><%=Email%></td>
+						<td><%=Tel%></td>
+						<td><%=NationalNumber%></td>
+						<td><%=AccountType%></td>
+						<td><%=CardType%></td>
+						<td><a href="">supprimer</a></td>
+					<tr>
+	</script>
+
+	<script type="text/javascript">
+		var mod = new OpenAccount();
+		var col = new OpenAccounts();
+
+		var pv = new FormView({
+			model : mod,
+			collection : col,
+			el : $('#main_section')
+		});
+
+		var lv = new HistoryView({
+			collection : col
+		});
+
+		//EventBus.trigger('anEvent', "Hello");
+
+		//var r = new myRouter();
+		//r.navigate('view1');
+	</script>
+
+	<!-- Enabling history is needed to use the Router -->
+	<script>
+		$(document).ready(function() {
+			Backbone.history.start();
+		})
+	</script>
+
+</body>
+
+
+
+</html>
+
+<!-- document.write(mod.get('Nom')); -->

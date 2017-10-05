@@ -1,0 +1,21 @@
+{
+  "name": "FIS2-Test",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "",
+  
+  "main": "app.js",
+  
+  "scripts":
+  {
+  	"start": "node app.js"
+  },
+  
+  "dependencies":
+  {
+    "rhea": "*",
+    "body-parser": "*",
+    "mongodb": "~2.2"
+  }
+}

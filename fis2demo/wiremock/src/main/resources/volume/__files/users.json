@@ -1,0 +1,35 @@
+{
+    "users" : [
+    	 {
+          "0001" : [
+              {
+                 "identity" : {
+                     "firstname" : "John",
+                     "lastname" : "Smith"
+                 }
+               },
+               {
+                  "address" : {
+                     "city" : "Amsterdam",
+                     "country" : "Netherlands"
+                 }
+               }
+          ]
+    	},
+    	{
+          "0002" : [
+              {
+                 "identity" : {
+                     "firstname" : "Dan",
+                     "lastname" : "Smither"
+                 }
+               },
+               {
+                  "address" : {
+                     "country" : "England",
+                     "city" : "Liverpool"
+                 }
+               }
+          ]
+    	}
+}

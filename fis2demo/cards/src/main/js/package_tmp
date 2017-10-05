@@ -1,0 +1,12 @@
+{
+  "name": "Express-node",
+  "version": "1.0.0",
+  "dependencies":
+  {
+    "express": "~4.0.0",
+    "mysql": "*",
+    "ejs": "~1.0.0",
+    "express-session": "~1.14.0",
+    "mongoose": "*"
+  }
+}

@@ -1,0 +1,17 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'explore', 'express-session' ]
+2 info using npm@3.10.10
+3 info using node@v6.10.3
+4 verbose stack Error: It doesn't look like express-session is installed.
+4 verbose stack     at /usr/lib/node_modules/npm/lib/explore.js:40:17
+4 verbose stack     at /usr/lib/node_modules/npm/node_modules.bundled/graceful-fs/polyfills.js:264:29
+4 verbose stack     at FSReqWrap.oncomplete (fs.js:123:15)
+5 verbose cwd /redhat/projects/workspace/fis2demo/cards
+6 error Linux 3.10.0-514.21.2.el7.x86_64
+7 error argv "/usr/bin/node" "/usr/bin/npm" "explore" "express-session"
+8 error node v6.10.3
+9 error npm  v3.10.10
+10 error It doesn't look like express-session is installed.
+11 error If you need help, you may report this error at:
+11 error     <https://github.com/npm/npm/issues>
+12 verbose exit [ 1, true ]

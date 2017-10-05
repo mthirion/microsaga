@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rests xmlns="http://camel.apache.org/schema/spring">
+    <rest id="rest-3b5adffb-dd00-47e6-8126-4f094349c651">
+        <post uri="/persons">
+            <to uri="direct:postPersons"/>
+        </post>
+        <get uri="/persons">
+            <to uri="direct:getPersons"/>
+        </get>
+        <get uri="/persons/{personId}">
+            <to uri="direct:getPersonId"/>
+        </get>
+    </rest>
+</rests>
