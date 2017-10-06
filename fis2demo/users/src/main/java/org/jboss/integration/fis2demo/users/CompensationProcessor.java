@@ -30,7 +30,10 @@ public class CompensationProcessor implements Processor {
 			/* GET TRANSACTION ID AND UPDATE CLIENT*/
 			String transactionID = object.getString("transactionID");
 			person.put("_id", transactionID);
-		}	
+			in.setHeader("transactionID", transactionID);
+		} else {
+			in.setHeader("transactionID", id);
+		}
 		
 		/* UPDATE EVENT */
 		object.remove("eventName");object.put("eventName", "USER_COMPENSATED");

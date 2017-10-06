@@ -26,7 +26,7 @@ public class Compensate implements Processor {
 		String transactionId = obj.getString("transactionID");
 		
 		try {
-			
+			System.out.println("===== ACCOUNTS ===== deleting Account from database  [tx = "+transactionId+"]");
 			jdbc.deleteAccount(transactionId);
 			jdbc.CommitAll();
 		} catch (Exception e) {

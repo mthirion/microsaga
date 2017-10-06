@@ -1,0 +1,78 @@
+swarm:
+  datasources:
+    data-sources:
+      AccountDS:
+        driver-name: mysql
+        connection-url: jdbc:mysql://localhost:3306/fisdemo
+        user-name: root
+        password: mysql
+#    jdbc-drivers:
+#      myh2:
+#        driver-class-name: org.h2.Driver
+#        xa-datasource-name: org.h2.jdbcx.JdbcDataSource
+#        driver-module-name: com.h2database.h2
+  
+  
+#  deployment:
+#    org.apache.activemq:
+#      activemq-rar:
+#      
+#  ejb3:
+#    default-resource-adapter-name: activemq-rar-5.11.0.redhat-630283.rar    
+    
+
+#
+#  network:
+#    socket-binding-groups:
+#      standard-sockets:
+#        outbound-socket-bindings:
+#          myapp-socket-binding:
+#            remote-host: localhost
+#            remote-port: 61616
+#            
+#  messaging-activemq:
+#    servers:
+#      default:
+#        remote-connectors:
+#          myapp-connector:
+#            socket-binding: myapp-socket-binding
+#        pooled-connection-factories:
+#          myAppRemote:
+#            user: username
+#            password: password
+#            connectors:
+#              - myapp-connector
+#            entries:
+#              - 'java:/jms/remote-mq'
+
+  logging: INFO    
+    
+#  resourceadapter:
+#    resource-adapters:
+#      activemq-ra:
+#        archive: activemq-rar-5.11.0.redhat-630283.rar
+#        archive: activemq-rar.rar
+#        config-properties:
+#          UserName:
+#            value: admin
+#          Password:
+#            value: admin
+#          ServerUrl:
+#            value: tcp://localhost:61616
+#        transaction-support: NoTransaction
+#        connection-definitions:
+#          activemq5Conn:
+#            class-name: org.apache.activemq.ra.ActiveMQManagedConnectionFactory
+#            jndi-name: java:/jms/activemq5QCF
+#            enabled: true
+            
+#  messaging-activemq:
+#    servers: default          
+#                  
+  messaging:
+    remote:
+      name: activemq5
+      host: 127.0.0.1
+      port: 61616
+      jndi-name: java:/jms/remote-mq
+  remote: true        

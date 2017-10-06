@@ -19,10 +19,10 @@ public class AccountJDBC {
 			Context ctx = new InitialContext();
 			DataSource ds = (DataSource) ctx.lookup("jboss/datasources/AccountDS");
 			if (ds == null)
-				System.out.println("DEBUGME - Datasource is null");
+				System.out.println("DEBUG - Datasource is null");
 			conn = ds.getConnection();
 			if (conn == null)
-				System.out.println("DEBUGME - Conn is null");
+				System.out.println("DEBUG - Conn is null");
 			conn.setAutoCommit(false);
 
 		} catch (NamingException e) {

@@ -40,7 +40,7 @@ public class MyRestController {
     	
     	JSONObject data = JSONObject.fromString(requestBody);
     	
-    	System.out.println("DEBUG : Data received at /api/open_account : ");
+    	System.out.println("===== GATEWAY===== received request at /api/open_account ");
     	System.out.println(data.toString());
     	System.out.println();
     	

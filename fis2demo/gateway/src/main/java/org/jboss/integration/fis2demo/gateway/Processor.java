@@ -20,6 +20,7 @@ public class Processor {
 		 * COMPUTE TRANSACTION ID
 		 */  
 		String transactionId = Util.getTransactionID();
+		System.out.println("===== GATEWAY ===== generating transation tx = "+transactionId);
 
 		data.put("transactionID", transactionId);
 		data.put("eventName", "OPEN_ACCOUNT");	// matches the ReST URI

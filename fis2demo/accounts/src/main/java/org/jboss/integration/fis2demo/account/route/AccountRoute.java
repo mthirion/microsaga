@@ -13,20 +13,29 @@ import org.wildfly.extension.camel.CamelAware;
 @ApplicationScoped
 public class AccountRoute extends RouteBuilder {
 
-    private static String BROKER_URL = "tcp://localhost:61617?broker.persistent=false&broker.useJmx=false&broker.useShutdownHook=false";
+	private String BROKER_URL = "tcp://localhost:61617?broker.persistent=false&broker.useJmx=false&broker.useShutdownHook=false";
+	private String JMSCLientID = "40";
+	private String JMSCLientID_compensation = "41";
 
+	private String replyTo = "topic://VirtualTopic.NEW_ACCOUNT_CREATED";
+	private String forwardTo = "topic:VirtualTopic.NEW_ACCOUNT_CREATED";
+	// String replyToCompensation="topic://COMPENSATION";
+	private String replyToCompensation = "topic://VirtualTopic.ACCOUNT_COMPENSATED";
 
-    @Override
+	private String inboundq = "Consumer." + JMSCLientID + ".VirtualTopic.NEW_USER_CREATED";
+	private String inbound_endpoint = "activemqswarm:queue:Consumer." + JMSCLientID
+			+ ".VirtualTopic.NEW_USER_CREATED?replyTo=" + replyTo;
+	private String compensationq = "Consumer." + JMSCLientID_compensation + ".VirtualTopic.NEW_USER_CREATED";
+	private String compensation_endpoint = "activemqswarm:queue:Consumer." + JMSCLientID_compensation
+			+ ".VirtualTopic.CARD_COMPENSATED?exchangePattern=InOnly&replyTo=" + replyToCompensation;
+
+	@Override
     public void configure() throws Exception {
 
-    	String replyTo="topic://NEW_ACCOUNT_CREATED";
-    	//String replyToCompensation="topic://COMPENSATION";
-    	String replyToCompensation="topic://ACCOUNT_COMPENSATED";
-    	String inbound_endpoint = "activemqswarm:topic:NEW_USER_CREATED?clientId=201&subscriptionDurable=true&replyTo="+replyTo;	
-    	String compensation_endpoint = "activemqswarm:topic:CARD_COMPENSATED?exchangePattern=InOnly&clientId=202&subscriptionDurable=true&replyTo="+replyToCompensation;
-        
+     
     	from(inbound_endpoint)
-        
+		//from("activemqswarm:queue:Consumer.40.VirtualTopic.NEW_USER_CREATED?replyTo=topic://VirtualTopic.NEW_ACCOUNT_CREATED?exchangePattern=InOnly")
+       
         .onException(java.lang.IllegalArgumentException.class)	//.log("error").end()
         														.to(compensation_endpoint).end()
        
@@ -34,28 +43,30 @@ public class AccountRoute extends RouteBuilder {
         //.setHeader("useEventTable", constant("true"))	// Switch between activemq and event-table
         
         .convertBodyTo(String.class)
+        .log("===== ACCOUNTS ===== reading message from "+inboundq)
         .log("${body}")
         
         .choice()
         .when(header("useEventTable").isEqualTo("true"))
         	.process("dbholder")
-            .log("handled with Event Table.")
+            .log("===== ACCOUNTS ===== handling SAGA with Event Table")
 //        	.throwException(new java.lang.IllegalArgumentException("Trying an exception !"))
         .otherwise()
         	.process("dbholder")
 //        	.throwException(new java.lang.IllegalArgumentException("Trying an exception !"))
-        	.log("handled with Messaging.")
-        	.log("sending message to " + replyTo)
+        	.log("===== ACCOUNTS ===== forwarding message to " + replyTo)
         	
 //      Using the (automatic) replyTo feature
-//      .to("activemqswarm:topic:new_card");     	
+        .to("activemqswarm:"+forwardTo+"?exchangePattern=InOnly")	
         .end();
         
         
         from(compensation_endpoint)
+        	.log("===== ACCOUNTS ===== reading compensation message from "+compensationq)
         	.process("compensate")
-        	.log("sending message to " + replyToCompensation)
+        	.log("===== ACCOUNTS ===== forwarding message to " + replyToCompensation)
         	// use automatic "replyTo" feature
+        	.to("activemqswarm:"+replyToCompensation+"?exchangePattern=InOnly")
         	;
 
     }

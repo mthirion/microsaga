@@ -59,20 +59,16 @@ public class JMSSender {
 	public void send(String destinationName, JSONObject obj, String replyTo) {
 
 		try {
-			// destination = session.createQueue(destinationName);
+			//destination = session.createQueue(destinationName);
 			destination = session.createTopic(destinationName);
 			producer = session.createProducer(destination);
 
 			TextMessage msg = session.createTextMessage();
 			msg.setText(obj.toString());
 
-			// Destination d = session.createTopic(replyTo);
-			// Destination d = session.createQueue(replyTo);
-			// msg.setJMSReplyTo(d);
-
-			System.out.println("Sending message part to : " + destination.toString());
-			System.out.println("DEBUG: message content is:");
+			System.out.println("===== GATEWAY ===== forward message to : " + destination.toString());
 			System.out.println(msg.getText());
+			System.out.println();
 			producer.send(msg);
 
 			session.commit();

@@ -81,45 +81,45 @@
             <!--             <transacted id="_transacted1" ref="required"/> -->
             <!-- TEST THE ERROR HANDLING -->
             <!--        <camel:throwException exceptionType="java.lang.IllegalArgumentException" message="Custom exception to try"/> -->
-            <from id="input" uri="activemq:{{camel.inputq}}?replyTo={{camel.outputq}}&amp;clientId={{camel.JMSclientId}}&amp;durableSubscriptionName={{camel.subscriberName}}&amp;subscriptionDurable=true"/>
-            <log id="read_input" message="reading message from {{camel.inputq}}"/>
-            <log id="before" message="BODY BEFORE"/>
-            <log id="body1" message="${body}"/>
-            <log id="line1" message="=================="/>
-            <process id="process" ref="processor"/>
-            <log id="after" message="BODY AFTER"/>
+            <!--             // Create Topic named VirtualTopic.EVENTS_SOURCE -->
+            <!--             <from id="input" uri="activemq:{{camel.inputq}}?replyTo={{camel.outputq}}&amp;clientId={{camel.JMSclientId}}&amp;durableSubscriptionName={{camel.subscriberName}}&amp;subscriptionDurable=true"/> -->
             <!--             <throwException -->
             <!--                 exceptionType="java.lang.IllegalArgumentException" -->
             <!--                 id="exception1" message="trying to raise an exception"/> -->
             <!--             <convertBodyTo id="convstring1" type="java.lang.String"/> -->
-            <log id="body2" message="${body}"/>
-            <log id="line2" message="==================="/>
+            <from id="inputvirtual" uri="activemq:{{camel.inputq}}?replyTo={{camel.outputq}}&amp;exchangePattern=InOnly"/>
+            <log id="read_input" message="===== USERS ===== reading message from {{camel.inputq}}"/>
+            <log id="body1" message="${body}"/>
+            <process id="process" ref="processor"/>
             <convertBodyTo id="convMongo1" type="com.mongodb.DBObject"/>
             <to id="tomongo" uri="mongodb:mongoclient?database={{camel.dbname}}&amp;collection={{camel.dbcollection}}&amp;operation=save"/>
+            <log id="writedb" message="===== USERS ===== storing new User in database"/>
             <setBody id="getsaved1">
                 <simple>${header.saved_body}</simple>
             </setBody>
-            <log id="line3" message="==================="/>
-            <log id="line4" message="==================="/>
-            <log id="writeout" message="propagating message to {{camel.outputq}}"/>
+            <log id="writeout" message="===== USERS ===== forwarding message to {{camel.outputq}}"/>
             <!--             <log message="${body}"/> -->
             <!--  using the replyTo feature -->
-            <!--             <to uri="activemq:{{camel.outputq}}?exchangePattern=InOnly"/> -->
+            <log id="bodyend" message="${body}"/>
+            <to id="tonext" uri="activemq:{{camel.outputq}}?exchangePattern=InOnly"/>
         </route>
         <route id="compensation">
-            <from id="fromcompensate" uri="activemq:{{camel.compensateq}}?exchangePattern=InOnly&amp;replyTo={{camel.compensationreplyq}}&amp;clientId={{camel.JMSclientId2}}&amp;durableSubscriptionName={{camel.subscriberName2}}&amp;subscriptionDurable=true"/>
-            <log id="line10" message="=========="/>
-            <log id="body10" message="${body}"/>
+            <!--             <from id="fromcompensate" uri="activemq:{{camel.compensateq}}?exchangePattern=InOnly&amp;replyTo={{camel.compensationreplyq}}&amp;clientId={{camel.JMSclientId2}}&amp;durableSubscriptionName={{camel.subscriberName2}}&amp;subscriptionDurable=true"/> -->
+<!--             <from id="inputcompensate" uri="activemq:{{camel.compensateq}}?replyTo={{camel.compensationreplyq}}&amp;exchangePattern=InOnly"/> -->
+            
+            <from id="inputcompensate" uri="activemq:queue:Consumer.60.VirtualTopic.ACCOUNT_COMPENSATED"/>
+            <log id="input_comp" message="===== USERS ===== read compensation message from {{camel.compensateq}}"/>
             <process id="compensate" ref="compensator"/>
             <convertBodyTo id="convertDBCompensate" type="com.mongodb.DBObject"/>
-            <log id="line11" message="=========="/>
-            <log id="body12" message="${body}"/>
             <to id="compensatedb" uri="mongodb:mongoclient?database={{camel.dbname}}&amp;collection={{camel.dbcollection}}&amp;operation=remove"/>
+            <log id="compdb" message="===== USERS ===== deleting transation from DB [tx = ${header.transactionID}]"/>
             <setBody id="savedcompensate">
                 <simple>${header.saved_body}</simple>
             </setBody>
-            <log id="end" message="propagating to {{camel.compensationreplyq}}"/>
+            <log id="compend" message="===== USERS ===== propagating message to {{camel.compensationreplyq}}"/>
             <!-- automatic replyTo -->
+            <log id="compbodyend" message="${body}"/>
+            <to id="tocompnext" uri="activemq:{{camel.compensationreplyq}}?exchangePattern=InOnly"/>
         </route>
     </camelContext>
 </beans>

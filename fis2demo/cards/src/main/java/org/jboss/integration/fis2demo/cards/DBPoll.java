@@ -28,7 +28,6 @@ public class DBPoll implements Processor {
 			// Get the first Map entry = first column = eventID
 			Entry<String, Object> entry = it.next();
 			String eventID = (String) entry.getValue();
-			System.out.println("DEBUG : eventID = " + eventID);
 			m.setHeader("eventid", eventID);
 			m.setHeader("transactionid", eventID);
 			// evnetID or transactionID
@@ -36,7 +35,6 @@ public class DBPoll implements Processor {
 			// Get the second entry = second column = CLOB
 			entry = it.next();
 			String data = (String) entry.getValue();
-			System.out.println("DEBUG : CLOB = " + data);
 			
 			// set the JSON object in the body for the next processor
 			m.setBody(data);

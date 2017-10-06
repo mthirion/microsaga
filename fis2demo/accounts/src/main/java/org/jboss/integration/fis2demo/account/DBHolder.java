@@ -22,8 +22,8 @@ public class DBHolder implements Processor {
 		Message m = exchange.getIn();
 		String body = m.getBody(String.class);
 		
-		System.out.println("DEBUG: body to be handled by MySQL JDBC driver:");
-		System.out.println(body);
+		//System.out.println("DEBUG: body to be handled by MySQL JDBC driver:");
+		//System.out.println(body);
 		
 		JSONObject obj = JSONObject.fromString(body);
 		String transactionId = obj.getString("transactionID");
@@ -32,7 +32,6 @@ public class DBHolder implements Processor {
 		JSONObject account = obj.getJSONObject("Account");
 		String accountType = account.getString("Type");
 		
-		System.out.println("DEBUG: account type = " + accountType + ".  --Generating new account number");
 		
 		/* ADD ACCOUNT NUMBER TO JSON OBJECT */
 		String accountNumber = Util.getBankAccountNumberBE();
@@ -50,9 +49,11 @@ public class DBHolder implements Processor {
 
 		
 		try {
+			System.out.println("===== ACCOUNTS ===== storing new Account in database");
 			jdbc.accumulateInsertAccount(transactionId, clientId, accountNumber, accountType);
 			Object flag = m.getHeader("useEventTable");
 			if (flag != null && flag.toString()=="true") {	// Switch between activemq and event-table
+				System.out.println("===== ACCOUNTS ===== generating Event in Event Table");
 				/* GENERATE AN EVENT ID */
 				String eventID = Util.getEventID();
 				jdbc.accumulateInsertClob(eventID, obj.toString());

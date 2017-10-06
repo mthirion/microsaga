@@ -26,14 +26,10 @@ public class DBPrepareSQL implements Processor {
 			String transactionId = object.getString("transactionID");
 			String clientId = object.getString("clientID");
 			String accountId = object.getString("accountID");
-//			String accountNumber="BE90-0634-2187-2132";
-			System.out.println("retrieved clientID = " + clientId);
-			System.out.println("retrieved accountNumber = " + accountId);
 			
 			/* GET CARD INFO */			
 			JSONObject card = object.getJSONObject("Card");
 			String type = card.getString("Type");
-			System.out.println("retrieved card type = " + type);
 
 			/* UPDATE CARD INFO */	
 			String cardId = Util.getBankCardNumberBE();
@@ -43,10 +39,7 @@ public class DBPrepareSQL implements Processor {
 			/* UPDATE OBJECT */
 			object.put("cardID", cardId);
 			object.remove("Card");object.put("Card", card);
-			
-			/* SAVE THE BODY */
-			m.setHeader("saved_bBody", object.toString());
-			
+
 			
 			/*
 			 * FIRST SOLUTION

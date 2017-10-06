@@ -13,18 +13,26 @@ import org.springframework.stereotype.Component;
 @Component
 public class CardsRoute extends RouteBuilder {
 
+	private String JMSClientID="50";
+	private String JMSClientID_compensation="51";
+	private String replyTo="topic://VirtualTopic.NEW_CARD_CREATED";
+	private String forwardTo="topic:VirtualTopic.NEW_CARD_CREATED";
+	private String replyToEndpoint="activemq:topic:VirtualTopic.NEW_CARD_CREATED";
+    //String replyToCompensation="topic://COMPENSATION";
+	private String replyToCompensation="topic://VirtualTopic.CARD_COMPENSATED";
+	private String forwardToCompensation="topic:VirtualTopic.CARD_COMPENSATED";
+	
+	private String inboundq = "queue:Consumer."+JMSClientID+".VirtualTopic.NEW_ACCOUNT_CREATED";
+	private String compensationq = "queue:Consumer."+JMSClientID_compensation+".VirtualTopic.NEW_ACCOUNT_CREATED";
+	private String card_mq_endpoint="activemq:queue:Consumer."+JMSClientID+".VirtualTopic.NEW_ACCOUNT_CREATED?replyTo="+replyTo;
+	private String compensation_endpoint="activemq:queue.Consumer."+JMSClientID_compensation+".VirtualTopic.CARD_IN_ERROR?exchangePattern=InOnly&replyTo="+replyToCompensation;
+	
 	@Override
     public void configure() {
     	
     		org.apache.camel.processor.RedeliveryPolicy redelivery = new org.apache.camel.processor.RedeliveryPolicy();
     		redelivery.setMaximumRedeliveries(0);
 
-    		String replyTo="topic://NEW_CARD_CREATED";
-    		String replyToEndpoint="activemq:topic:NEW_CARD_CREATED";
-            //String replyToCompensation="topic://COMPENSATION";
-            String replyToCompensation="topic://CARD_COMPENSATED";
-            String card_mq_endpoint="activemq:topic:NEW_ACCOUNT_CREATED?replyTo="+replyTo;
-            String compensation_endpoint="activemq:topic:CARD_IN_ERROR?exchangePattern=InOnly&replyTo="+replyToCompensation;
                 		
     		
     		// Using application.properties and its "spring.datasource.*" properties,
@@ -34,27 +42,25 @@ public class CardsRoute extends RouteBuilder {
             	.onException(java.lang.IllegalArgumentException.class).to(compensation_endpoint).end()
             															//.log("Exception").stop().end()
             	.transacted("required")
+            	.log("===== CARDS ===== polled an event from ACCOUNT Event Table")           	
             	.process("dbpoll")
-            	.log("got the content of the db")
-            	.log("${body}")
+            	.log("${body}") 
             	
             	.process("preparesql")
-            	.log("message ready for insertion")
-            	.log("${body}")
+
             	//.to("jdbc:mysqlDataSource?resetAutoCommit=false")
             	.to("sql:INSERT INTO Cards (CardNumber, ClientID, AccountID, CardType, TransactionID) values (:#${header.cardID}, :#${header.clientID} , :#${header.accountid}, :#${header.cardType}, :#${header.transactionID}) ON DUPLICATE KEY UPDATE ClientID=:#${header.clientID} , AccountID=:#${header.accountid}, CardType=:#${header.cardType}, TransactionID=:#${header.transactionID}?dataSource=#mysqlDataSource")
-            	.log("message inserted")
-            	
-            	.setBody(simple("${header.savedBody}"))
-            	.log("FINAL")
+            	.log("===== CARDS ===== storing new Card in database")
             	.log("${body}")
+            	
+            	.setBody(simple("${header.saved_body}"))
 
-            	.log("delivering to destination " + replyTo)
+            	.log("===== CARDS ===== sending message to : " + replyTo)
             	.to(replyToEndpoint)
             	
 //            	.throwException(new java.lang.IllegalArgumentException("Trying an exception !"))
             	.to("sql:DELETE FROM AccountEvents WHERE EventID = :#${header.eventID}?dataSource=#mysqlDataSource")
-            	.log("record deleted")
+            	.log("===== CARDS ===== suppress Event from Event Table")
             	.delay(2000);
            		
             
@@ -62,30 +68,30 @@ public class CardsRoute extends RouteBuilder {
             from(card_mq_endpoint).routeId("mqcardroute")
         		.onException(java.lang.IllegalArgumentException.class)	//.log("exception").end()
         																.handled(true).to(compensation_endpoint).end()
+        		.log("===== CARDS ===== read message from "+inboundq)   
+        		.log("${body}")
         		.process("preparesql")
-            	.log("message ready for insertion")
-            	.log("${body}")
             	//.to("jdbc:mysqlDataSource?resetAutoCommit=false")
             	.to("sql:INSERT INTO Cards (CardNumber, ClientID, AccountID, CardType, TransactionID) values (:#${header.cardID}, :#${header.clientID} , :#${header.accountid}, :#${header.cardType}, :#${header.transactionID}) ON DUPLICATE KEY UPDATE ClientID=:#${header.clientID} , AccountID=:#${header.accountid}, CardType=:#${header.cardType}, TransactionID=:#${header.transactionID}?dataSource=#mysqlDataSource")
-            	.log("message inserted")
-            	
-            	.setBody(simple("${header.saved_body}"))
-            	.log("FINAL")
+            	.log("===== CARDS ===== storing new Card in database")
             	.log("${body}")
             	
+            	.setBody(simple("${header.saved_body}"))
+            	
             	.throwException(new java.lang.IllegalArgumentException("Trying an exception !"))
-            	.log("delivering to destination " + replyTo)
-            	//.to("activemq:topic:NEW_CARD_CREATED")
+            	.log("===== CARDS ===== forwaring message to : " + replyTo)
+            	.to("activemq:"+forwardTo+"?exchangePattern=InOnly");
             	// use automated replyTo feature
-            	.delay(2000);
+            	//.delay(2000);
       	
       
             from(compensation_endpoint)
-            	.log("compensatin cards")
+            	.log("===== CARDS ===== reading compensation message from " +compensationq)
             	.process("compensation")
-            	.log("performing compensation for transaction ${header.transactionID}")
+            	.log("===== CARDS ===== deleting Card from database [tx = ${header.transactionID}]")
             	.to("sql:DELETE FROM Cards WHERE TransactionID = :#${header.transactionID} ?dataSource=#mysqlDataSource")
-            	.log("propagating to destination " + replyToCompensation);
+            	.log("==== CARDS ===== forwarding message to : " + replyToCompensation)
+            	.to("activemq:"+forwardToCompensation+"?exchangePattern=InOnly");
 
     }
 
