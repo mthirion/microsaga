@@ -23,6 +23,7 @@ public class UserProcessor implements Processor {
 
 		/* GET TRANSACTION ID */
 		String transactionID = object.getString("transactionID");
+		in.setHeader("transactionID", transactionID);
 		
 		/* CLIENT_ID IS THE NATIONAL NUMBER */
 		JSONObject person = object.getJSONObject("Owner");
@@ -41,6 +42,7 @@ public class UserProcessor implements Processor {
 		
 		/* UPDATE THE EVENT */
 		object.remove("eventName");object.put("eventName", "NEW_USER_CREATED");
+		in.setHeader("eventName", "NEW_USER_CREATED");
 		
 		/* SAVE THE ENTIRE (NEW) MESSAGE FOR REPLY_TO*/
 		in.setHeader("saved_body", object.toString()); // for replying to

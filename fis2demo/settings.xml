@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AppSettings>
+  <Section Name="Env">
+    <Property Key="LastOpenedCellar" Value="/perso/openCellar/caves/myCellar.oc" />
+  </Section>
+  <Section Name="MainWindow">
+    <Property Key="X" Value="0" />
+    <Property Key="Y" Value="28" />
+    <Property Key="Width" Value="1920" />
+    <Property Key="Height" Value="1018" />
+    <Property Key="State" Value="T" />
+  </Section>
+  <Section Name="App" />
+  <Section Name="RackWindow" />
+  <Section Name="GridWines">
+    <Property Key="X" Value="0" />
+    <Property Key="Y" Value="0" />
+    <Property Key="Width" Value="1018" />
+    <Property Key="Height" Value="873" />
+  </Section>
+  <Section Name="RackItemsSelector">
+    <Property Key="X" Value="0" />
+    <Property Key="Y" Value="28" />
+    <Property Key="Width" Value="500" />
+    <Property Key="Height" Value="500" />
+  </Section>
+  <Section Name="WineWindow" />
+  <Section Name="ConfirmWindow" />
+</AppSettings>
+

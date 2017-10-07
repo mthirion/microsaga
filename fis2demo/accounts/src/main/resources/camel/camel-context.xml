@@ -7,7 +7,8 @@
     <!-- ========== -->
     <!-- PROPERTIES -->
     <!-- ========== -->
-    <!-- <context:property-placeholder location="classpath:camel/camel.properties" /> -->
+    <!-- <context:property-placeholder location="classpath:camel/camel.properties" 
+		/> -->
     <!-- ========= -->
     <!-- ACTIVE MQ -->
     <!-- ========= -->
@@ -29,11 +30,20 @@
         <property name="transacted" value="true"/>
         <!-- <property name="cacheLevelName" value="CACHE_CONSUMER"/> -->
     </bean>
+    <!-- ======== -->
+    <!-- MONGO DB -->
+    <!-- ======== -->
+    <bean class="com.mongodb.MongoClient" id="mongoclient" name="mongoclient">
+        <constructor-arg index="0" type="java.lang.String" value="localhost"/>
+        <constructor-arg index="1" type="int" value="27017"/>
+    </bean>
     <!-- ============ -->
     <!-- CUSTOM BEANS -->
     <!-- ============ -->
-    <bean class="org.jboss.integration.fis2demo.account.DBHolder" id="dbholder"/>
-    <bean class="org.jboss.integration.fis2demo.account.Compensate" id="compensate"/>
+    <bean class="org.jboss.integration.fis2demo.account.MongoDBHolder" id="mongoholder"/>
+    <bean class="org.jboss.integration.fis2demo.account.MsgFormatter" id="preparemsg"/>
+
+
     <!-- ============ -->
     <!-- PACKAGE SCAN -->
     <!-- ============ -->

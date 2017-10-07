@@ -56,7 +56,7 @@ public class JMSSender {
 		}
 	}
 
-	public void send(String destinationName, JSONObject obj, String replyTo) {
+	public void send(String destinationName, JSONObject obj, String eventName) {
 
 		try {
 			//destination = session.createQueue(destinationName);
@@ -64,6 +64,7 @@ public class JMSSender {
 			producer = session.createProducer(destination);
 
 			TextMessage msg = session.createTextMessage();
+			msg.setStringProperty("eventName", eventName);
 			msg.setText(obj.toString());
 
 			System.out.println("===== GATEWAY ===== forward message to : " + destination.toString());

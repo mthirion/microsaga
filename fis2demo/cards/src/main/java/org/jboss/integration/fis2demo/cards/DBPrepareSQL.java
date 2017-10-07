@@ -69,6 +69,9 @@ public class DBPrepareSQL implements Processor {
 			
 			/* UPDATE THE EVENT */
 			object.remove("eventName");object.put("eventName", "NEW_CARD_CREATED");
+			m.setHeader("eventName", "NEW_CARD_CREATED");
+			
+			/* SAVE THE BODY */
 			m.setHeader("saved_body", object.toString());
 			
 			/* UPDATE BODY */

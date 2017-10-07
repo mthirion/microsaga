@@ -17,18 +17,18 @@ public class DBPrepareDelete implements Processor {
 
 		Message m = exchange.getIn();
 		Object body = m.getBody();
-		if ( !(body == null)) {
 
-			JSONObject object = JSONObject.fromString(m.getBody(String.class));
-			String transactionId = object.getString("transactionID");
+		JSONObject object = JSONObject.fromString(m.getBody(String.class));
+		String transactionId = object.getString("transactionID");
 
-			m.setHeader("transactionID", transactionId);
-			
-			/* UPDATE THE EVENT */
-			object.remove("eventName");object.put("eventName", "CARD_COMPENSATED");
-		}
-		//exchange.setIn(m);
+		m.setHeader("transactionID", transactionId);
+
+		/* UPDATE THE EVENT */
+		object.remove("eventName");
+		object.put("eventName", "CARD_COMPENSATED");
+		m.setBody(object.toString());
+		m.setHeader("eventName", "CARD_COMPENSATED");
+		exchange.setIn(m);
 	}
-
 
 }

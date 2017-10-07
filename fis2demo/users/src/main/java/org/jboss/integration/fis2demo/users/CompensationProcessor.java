@@ -37,6 +37,7 @@ public class CompensationProcessor implements Processor {
 		
 		/* UPDATE EVENT */
 		object.remove("eventName");object.put("eventName", "USER_COMPENSATED");
+		in.setHeader("eventName", "USER_COMPENSATED");
 		
 		/* SAVE OBJECT */
 		in.setHeader("saved_body", object.toString());

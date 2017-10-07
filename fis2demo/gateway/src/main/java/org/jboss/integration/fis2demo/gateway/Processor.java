@@ -27,7 +27,7 @@ public class Processor {
 		
     	if (sender == null) 
     		sender = new JMSSender(config.getActivemqurl(), config.getActivemquser(), config.getActivemqpassword());
-    	sender.send(config.getOpen_account(),data, config.getReplyTo());
+    	sender.send(config.getOpen_account(),data, "OPEN_ACCOUNT");
     }
 	
 }
