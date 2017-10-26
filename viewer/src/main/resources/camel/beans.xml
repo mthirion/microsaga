@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd             http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd     http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd     http://www.springframework.org/schema/context        http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+	<!-- ================= -->
+	<!-- SPRING PROPERTIES -->
+	<!-- ================= -->
+	<!-- <util:properties id="camelproperties" location="classpath:camel/camel.properties" 
+		/> ${camelproperties:propName} -->
+	<!-- <context:property-placeholder location="classpath:camel/camel.properties" -->
+	<!-- /> -->
+
+
+	<!-- ======= -->
+	<!-- MONGODB -->
+	<!-- ======= -->
+<!-- 	<bean class="com.mongodb.MongoClient" id="mongoclient"> -->
+<!-- 		<constructor-arg index="0" type="java.lang.String" -->
+<!-- 			value="${cards.dbhost}" /> -->
+<!-- 		<constructor-arg index="1" type="int" value="${cards.dbport}" /> -->
+<!-- 	</bean> -->
+
+
+	<!-- ================ -->
+	<!-- MYSQL DATASOURCE -->
+	<!-- ================ -->
+	<bean id="mysqlDataSource" class="com.mysql.jdbc.jdbc2.optional.MysqlDataSource">
+<!-- 		<property name="driverClassName" value="com.mysql.jdbc.Driver" /> -->
+		<property name="url" value="jdbc:mysql://localhost:3306/fis2demo" />
+		<property name="user" value="root" />
+		<property name="password" value="mysql" />
+	</bean>
+	
+
+	<!-- ============ -->
+	<!-- SPRING BEANS -->
+	<!-- ============ -->
+	<bean class="org.jboss.integration.fis2demo.viewer.EventLocker" id="eventlocker" />
+	<bean class="org.jboss.integration.fis2demo.viewer.EventProcessor" id="eventprocessor" />
+
+
+</beans>
