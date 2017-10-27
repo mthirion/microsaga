@@ -48,8 +48,8 @@ public class CardsRoute extends RouteBuilder {
             	.setBody(simple("${header.saved_body}"))
             	
             	.delay(5000)
-            	//.delay(10000)
-            	//.throwException(new java.lang.IllegalArgumentException("Trying an exception !"))
+            	.delay(15000)
+            	.throwException(new java.lang.IllegalArgumentException("Trying an exception !"))
             	.log("===== CARDS ===== forwaring event [${header.transactionID} - NEW_CARD_CREATED]")
             	.to("activemq:"+forwardTo+"?exchangePattern=InOnly");
             	// use automated replyTo feature

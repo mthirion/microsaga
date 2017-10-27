@@ -90,10 +90,10 @@
             <from id="inputvirtual" uri="activemq:{{camel.inputq}}?replyTo={{camel.outputq}}&amp;exchangePattern=InOnly&amp;selector=eventName='OPEN_ACCOUNT'"/>
             <log id="read_input" message="===== USERS ===== reading event [OPEN_ACCOUNT]"/>
             <log id="body1" message="${body}"/>
-            <process id="process" ref="processor"/>
-            <convertBodyTo id="convMongo1" type="com.mongodb.DBObject"/>
             <!--             <log message="${body}"/> -->
             <!--  using the replyTo feature -->
+            <process id="process" ref="processor"/>
+            <convertBodyTo id="convMongo1" type="com.mongodb.DBObject"/>
             <to id="tomongo" uri="mongodb:mongoclient?database={{camel.dbname}}&amp;collection={{camel.dbcollection}}&amp;operation=save"/>
             <log id="writedb" message="===== USERS ===== storing new User in database"/>
             <setBody id="getsaved1">
@@ -108,13 +108,13 @@
             <!--             <from id="inputcompensate" uri="activemq:{{camel.compensateq}}?replyTo={{camel.compensationreplyq}}&amp;exchangePattern=InOnly"/> -->
             <from id="inputcompensate" uri="activemq:{{camel.compensateq}}?selector=eventName='ACCOUNT_COMPENSATED'&amp;replyTo={{camel.compensationreplyq}}&amp;exchangePattern=InOnly"/>
             <log id="input_comp" message="===== USERS ===== read compensation event [ACCOUNT_COMPENSATED]"/>
-            <to id="_to1" uri="direct:compensation_internal"/>
+            <to id="to_cmp_route" uri="direct:compensation_internal"/>
         </route>
         <route id="compensate_internal">
             <from id="comp_int" uri="direct:compensation_internal"/>
+            <!-- automatic replyTo -->
             <process id="compensate" ref="compensator"/>
             <convertBodyTo id="convertDBCompensate" type="com.mongodb.DBObject"/>
-            <!-- automatic replyTo -->
             <to id="compensatedb" uri="mongodb:mongoclient?database={{camel.dbname}}&amp;collection={{camel.dbcollection}}&amp;operation=remove"/>
             <log id="compdb" message="===== USERS ===== deleting User from DB [tx = ${header.transactionID}]"/>
             <setBody id="savedcompensate">

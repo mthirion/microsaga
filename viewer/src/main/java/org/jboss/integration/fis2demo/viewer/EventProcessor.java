@@ -100,7 +100,7 @@ public class EventProcessor implements Processor {
 			}
 
 			if (eventName.equals("USER_COMPENSATED")) {
-				update = conn.prepareStatement("delete from MView where clientNumber=?)");
+				update = conn.prepareStatement("delete from MView where clientNumber=?");
 				update.setString(1, json.getString("clientID"));
 
 				update.executeUpdate();

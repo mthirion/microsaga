@@ -23,6 +23,7 @@
 
 		<fabric8.namespace>fisdemo</fabric8.namespace>
 		<fabric8.bom.version>2.3.3</fabric8.bom.version>
+		<fabric8.version>2.2.170.redhat-000004</fabric8.version>
 		<fabric8.plugin.version>3.5.22</fabric8.plugin.version>
 
 	</properties>
@@ -165,39 +166,44 @@
 				<version>${fabric8.plugin.version}</version>
 
 				<configuration>
-					<registry>openshift-registry.org</registry>
 					<pushRegistry>openshift-registry.org</pushRegistry>
 					<authConfig>
+						<useOpenShiftAuth/>
+						<!--
 						<username>mthirion</username>
 						<password>0hEBheQlmuJfItMMmZCE93eOV8EzNdQ-aLd8Q0zIuF4</password>
+						-->
 					</authConfig>
 
+					
 					<images>
 						<image>
 							<name>fisdemo/account</name>
 						</image>
 					</images>
-
+					
+					
 					<generator>
 						<config>
 							<wildfly-swarm>
 								<fromMode>istag</fromMode>
-								<from>registry.access.redhat.com/jboss-fuse-6/fis-java-openshift:2.0</from>
+								<from>openshift/fis-java-openshift:2.0</from>
+								<name>users</name>
 							</wildfly-swarm>
 						</config>
 					</generator>
 				</configuration>
 
 				<executions>
-					<execution>
-						<id>fmp</id>
-						<goals>
-							<!-- <goal>resource</goal> -->
-							<goal>helm</goal>
-							<goal>build</goal>
-							<goal>deploy</goal>
-						</goals>
-					</execution>
+<!-- 					<execution> -->
+<!-- 						<id>fmp</id> -->
+<!-- 						<goals> -->
+<!-- 							<goal>resource</goal> -->
+<!-- 							<goal>helm</goal> -->
+<!-- 							<goal>build</goal> -->
+<!-- 							<goal>deploy</goal> -->
+<!-- 						</goals> -->
+<!-- 					</execution> -->
 				</executions>
 			</plugin>
 

@@ -10,9 +10,11 @@
 
 	<properties>
 		<fabric8.namespace>fisdemo</fabric8.namespace>
+		<fabric8.version>2.2.170.redhat-000004</fabric8.version>
+		<fabric8.plugin.version>3.5.22</fabric8.plugin.version>
+		
 		<spring-boot.version>1.5.6.RELEASE</spring-boot.version>
 		<spring-cloud-dependencies.version>Brixton.SR7</spring-cloud-dependencies.version>
-		<fabric8.version>2.2.170.redhat-000004</fabric8.version>
 		<mongo.version>3.2.2</mongo.version>
 		<camelamq.version>1.1.0</camelamq.version>
 	</properties>
@@ -205,24 +207,38 @@
 
 			<!-- OCP FABRIC8 PLUGIN -->
 
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>fabric8-maven-plugin</artifactId>
+				<version>${fabric8.plugin.version}</version>
 
-			<!-- <plugin> -->
-			<!-- <groupId>io.fabric8</groupId> -->
-			<!-- <artifactId>fabric8-maven-plugin</artifactId> -->
-			<!-- <version>${fabric8.plugin.version}</version> -->
+				<configuration>
+					<pushRegistry>openshift-registry.org</pushRegistry>
+					<authConfig>
+						<useOpenShiftAuth/>
+						<!--
+						<username>mthirion</username>
+						<password>0hEBheQlmuJfItMMmZCE93eOV8EzNdQ-aLd8Q0zIuF4</password>
+						-->
+					</authConfig>
 
-			<!-- <configuration> -->
-			<!-- <generator> -->
-			<!-- <config> -->
-			<!-- <spring-boot> or <karaf> -->
-			<!-- <fromMode>istag</fromMode> -->
-			<!-- <from>openshift/fis-java-openshift:2.0</from> -->
-			<!-- <from>jboss-fuse-6/fis-karaf-openshift:2.0</from> -->
-			<!-- </spring-boot> -->
-			<!-- </config> -->
-			<!-- </generator> -->
+					<images>
+						<image>
+							<name>fisdemo/users</name>
+						</image>
+					</images>
 
-			<!-- <resources> -->
+					<generator>
+						<config>
+							<spring-boot>
+								<fromMode>istag</fromMode>
+								<from>openshift/fis-java-openshift:2.0</from>
+								<name>users</name>
+							</spring-boot>
+						</config>
+					</generator>
+					
+							<!-- <resources> -->
 			<!-- <labels> -->
 			<!-- <all> -->
 			<!-- <property> -->
@@ -256,18 +272,26 @@
 			<!-- </annotations> -->
 			<!-- </resource> -->
 
-			<!-- </configuration> -->
-			<!-- Connect fabric8:resource and fabric8:build to lifecycle phases -->
-			<!-- <executions> -->
-			<!-- <execution> -->
-			<!-- <id>fabric8</id> -->
-			<!-- <goals> -->
-			<!-- <goal>resource</goal> -->
-			<!-- <goal>build</goal> -->
-			<!-- </goals> -->
-			<!-- </execution> -->
-			<!-- </executions> -->
-			<!-- </plugin> -->
+
+				</configuration>
+
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						 <id>fabric8</id>  -->
+<!-- 						<id>fmp</id> -->
+<!-- 						<goals> -->
+<!-- 							<goal>resource</goal> -->
+<!-- 							<goal>helm</goal> -->
+<!-- 							<goal>build</goal> -->
+<!-- 							<goal>deploy</goal> -->
+<!-- 						</goals> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+			</plugin>
+
+
+
+
 		</plugins>
 	</build>
 </project>
